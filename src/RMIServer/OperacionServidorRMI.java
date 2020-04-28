@@ -1,5 +1,6 @@
 package RMIServer;
 
+import RMIInterface.Hola;
 import RMIInterface.OperacionInterfaz;
 
 import java.net.InetAddress;
@@ -8,7 +9,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
-public class OperacionServidorRMI extends UnicastRemoteObject implements OperacionInterfaz {
+public class OperacionServidorRMI extends UnicastRemoteObject implements OperacionInterfaz, Hola {
   private static final long serialVersionUID = 0L;
   private final int PUERTO = 3232;
 
@@ -25,6 +26,7 @@ public class OperacionServidorRMI extends UnicastRemoteObject implements Operaci
       System.out.println("Escuchado en .. " + dirIP + ":" + PUERTO);
       Registry registry = LocateRegistry.createRegistry(PUERTO);
       registry.bind("operacionservidor", (OperacionInterfaz) this);
+      registry.bind("mensaje", (Hola) this);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -32,7 +34,13 @@ public class OperacionServidorRMI extends UnicastRemoteObject implements Operaci
   }
 
   @Override
-  public int calcularMayor(int num1, int num2) throws RemoteException {
-    return (num1 > num2) ? num1 : num2;
+  public int calcularMayor(int num1, int num2) {
+    return Math.max(num1, num2);
+  }
+
+
+  @Override
+  public String hola(String mensaje) {
+    return "Hola "+ mensaje;
   }
 }
